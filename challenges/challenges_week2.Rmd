@@ -1,0 +1,16 @@
+---
+title: "Challenges"
+author: ''
+date: ''
+output:
+  pdf_document: default
+  html_document: default
+subtitle: Week 2
+---
+
+## Challenge: The one with the political attitude
+
+Use the survey of political attitude data to explore how attitudes have changed over time (the data is in the political_attitude folder in the exercise folder, the data dictionary is in the UKDA-7404-tab/mrdoc/allissue folder).
+What are the main change in the base of the different UK political parties over the different waves of the survey?
+You should aim to tell a story with the data. For example, do support vary by gender? What characteristics of supporters of specific parties shift over time? Anything interesting you can tell me about the _profile_ of voters of specific parties?
+For this challenge, you need to turn in a .Rmd file that compiles, including both text, tables and figures that you generate with R code.

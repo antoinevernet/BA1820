@@ -1,0 +1,424 @@
+---
+title: "Session 4"
+author: "Antoine Vernet"
+date: ''
+output:
+  ioslides_presentation:
+    style: style.css
+  beamer_presentation:
+    slide_level: 2
+---
+
+```{r echo = FALSE}
+library(ggplot2)
+```
+
+## Lesson Plan
+
+- Expected values
+- Exploring data
+- solution of exercises given in week 1
+
+
+
+
+# Statistics
+
+## Expected values | Definition
+
+The expected value of a random variable $X$, denoted $E(X)$ is a weighted average of all possible values of $X$, with weights determined by the probability density function.
+
+The expected value is also sometimes denoted $\mu X$ or $\mu$, and called the _population mean_.
+
+## Expected value for a discrete variable
+$$
+E(X) = x_1 f(x_1) + x_2 f(x_2) + ... + x_k f(x_k) \equiv \sum_{j = 1}^k x_j f(x_j)
+$$
+Where $x_i$ is any value taken by $X$ and $f(x)$ is the pmf of $X$
+
+## Expected value for a continuous variable
+
+$$
+E(X) = \int_{- \infty}^\infty x f(x) dx
+$$
+
+## Example: a die
+
+A standard die has 6 faces numbered 1 to 6. If it is fair, each face has a probability of $\frac{1}{6}$ of coming up
+
+What is the expected value of such a die?
+
+
+## Properties of expected values
+
+- The expected value of a constant is the constant itself
+
+- If for random variables $X$ and $Y$, $X \le Y$ then $E(X) \le E(Y)$
+
+- The expected value operator is linear, in the sense:
+$$
+\begin{aligned}
+  E[X + c] &=   E[X] + c \\
+  E[X + Y] &=   E[X] + E[Y] \\
+  E[aX]    &= a E[X]
+\end{aligned}
+$$
+
+## Mean in R
+
+```{r}
+set.seed(356)
+vec <- sample(x = 100, replace = TRUE)
+
+mean(vec)
+
+summary(vec)
+```
+
+
+## Mean in R (2)
+
+```{r}
+set.seed(356)
+vec <- rnorm(100, 5, 5)
+
+mean(vec)
+
+summary(vec)
+```
+
+## Mean in R (3)
+
+```{r}
+set.seed(356)
+vec <- rnorm(1000, 5, 5)
+
+mean(vec)
+
+summary(vec)
+```
+
+## Mean in R (4)
+
+```{r}
+#set.seed(356)
+#vec <- rnorm(1000, 5, 5)
+vec <- c(vec, NA)
+mean(vec)
+mean(vec, na.rm = TRUE)
+summary(vec)
+```
+
+## Median
+
+The median is another measure of central tendency.
+
+For a continuous variable, the median $m$ is the value such as half of the area under the pdf is on the left of $m$.
+
+For a discrete variable $X$, the median is defined as the middle value among the ordered values of $X$. For example, if $X$ can take values $\{4, 8, 10, 12, 13\}$ 
+then the median is $10$. If $X$ takes an odd number of values, there are two medians which are sometimes averaged to get a single value.
+
+
+## Median in R
+
+```{r}
+#set.seed(356)
+vec <- rnorm(1000, 5, 5)
+
+median(vec)
+
+```
+
+
+## Measures of variability
+
+
+There are two widely used measures of the variability of a random variable: the variance and standard deviation.
+
+The variance is a measure of distance from the mean. It is defined as:
+
+$$
+Var(X) \equiv E[(X - \mu)^2]
+$$
+This is equivalent to $Var(X) = E(X^2) - \mu^2$. Note that variance is sometimes denoted $\sigma^2$.
+
+The standard deviation is the positive square root of the variance:
+
+$$
+sd(X) \equiv \sqrt{Var(X)}
+$$
+It is sometimes denoted $\sigma$.
+
+## Variance and standard deviation in R
+
+```{r}
+#set.seed(356)
+#vec <- rnorm(1000, 5, 5)
+
+var(vec)
+
+sd(vec)
+
+sd(vec) ^ 2 # sd(vec) ** 2 also works
+
+```
+
+
+## Standardisation
+
+Standardisation can be useful in numerous situations and it is a common application of the properties of variance and standard deviation.
+
+For a random variable $X$ with mean $\mu$ and standard deviation $\sigma$, let's define:
+
+$$
+Z \equiv \frac{X - \mu}{\sigma}
+$$
+This new variable $Z$ will have mean $E(Z) = 0$ and standard deviation $\sigma = 1$.
+
+This is sometimes refered to as the _z-transform_ of $X$.
+
+
+## Skewness 
+
+The skewness is defined as:
+
+$$
+E(Z^3) = E[(X - \mu)^3]/ \sigma^3
+$$
+In other words, it is the third standardised moment of $X$.
+
+If skewness is 0, $X$ is symmetric around 0. If it is negative, the distribution has a longer left tail. If it is positive, it has a longer right tail.
+
+
+```{r, echo = FALSE, out.width = '70%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics('img/Negative_and_positive_skew_diagrams.png')
+```
+
+## Kurtosis
+
+Kurtosis is defined as the fourth standardized moment of $X$:
+
+$$
+E(Z^4) = E[(X - \mu)^4] / \sigma^4
+$$
+Larger values of kurtosis indicate that the tail in the distribution of $X$ are thicker.
+
+
+```{r, echo = FALSE, out.width = '50%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics('img/Pearson_type_VII_distribution_PDF.png')
+```
+
+## Kurtosis
+
+A distribution with no kurtosis ($E(Z^4)= 0$) is said to be __mesokurtic__.
+
+A distribution with positive kurtosis ($E(Z^4) > 0$) is said to be __leptokurtic__.
+
+A distribution with negative kurtosis ($E(Z^4) < 0$) is said to be __platykurtic__.
+
+
+## Skew and kurtosis in R | Visual inspection
+
+```{r out.width = "60%", fig.align = "center"}
+library(ggplot2)
+ggplot(data.frame(vec), aes(vec)) + geom_density()
+
+```
+
+## Skew and kurtosis in R 
+
+```{r}
+library(e1071)
+#set.seed(356)
+#vec <- rnorm(1000, 5, 5)
+
+skewness(vec)
+
+kurtosis(vec)
+
+```
+
+## Moments
+
+The expectation of a random variable is sometimes called the first moment of this variable.
+
+The variance is the second moment. 
+
+As we have seen, the skewness is the third moment and the kurtosis is the fourth moment of this variable.
+
+
+## Quantiles
+
+Quantiles are cutpoints dividing the range of probability distribution into intervals with equal probabilities.
+
+```{r, echo = FALSE, out.width = '40%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics('img/Lqr_with_quantile.png')
+```
+
+- The 4-quantiles are called quartiles
+
+- The 10-quantiles are called deciles
+
+- The 100-quantiles are called percentiles.
+
+
+## Quantiles in R
+
+
+```{r}
+#quartiles
+quantile(vec, probs = seq(0, 1, 0.25))
+#deciles
+quantile(vec, probs = seq(0, 1, 0.1))
+
+```
+
+
+
+## Visualising summary statistics
+
+There are many ways to visualise summary statistics. Two are very useful:
+
+- density plot
+- boxplot
+
+## Density plot
+
+```{r echo = TRUE, fig.align = "center", out.width = "60%"}
+norm_dis <- data.frame(x = rnorm(n = 1000))
+ggplot(data = norm_dis, aes(x)) + geom_density()
+```
+
+## Boxplot
+
+```{r echo = TRUE, fig.align = "center", out.width = "60%"}
+normal_dis <- data.frame(x = "Normal", y = rnorm(n = 1000, 
+                                                 mean = 0, sd = 10))
+ggplot(data = normal_dis, aes(x = x, y = y)) + geom_boxplot()
+```
+
+
+# Exploring data
+
+## Opening the Audit of Political engagement data
+
+```{r echo = TRUE}
+ape <- read.delim(
+  "./data/UKDA-7404-tab/tab/audit_of_political_engagement_1-10_data.tab")
+head(ape[, c(1, 3)])
+
+dim(ape)
+
+```
+
+## Simplifying
+
+This is a complex dataset, for our example, let's simplify things a bit by only looking at the last wave of the survey.
+
+```{r echo = TRUE, message = FALSE}
+library(dplyr) # for easy filter/selection
+library(magrittr) # for the pipe operator
+ape <- dplyr::filter(ape, Wave == 10) %>% # Because there is another
+# function named filter in the stats package which is also loaded
+dplyr::select(q1, rurl, income, anykid, exage, gender)
+dim(ape)
+```
+
+Now that is more manageable. We are still looking at doing some recoding.
+
+## This is not the 1960s
+
+```{r echo = TRUE}
+summary(ape[, 'gender'])
+```
+This won't do
+
+```{r echo = TRUE}
+ape[, 'gender'] <- factor(ape[, 'gender'], levels = c(1, 2), 
+               labels = c("Male", "Female"))
+```
+
+We need to do the same for q1, rurl, qual, income, anykid.
+I do this behind the scene (have a look at the .Rmd)
+
+```{r echo = FALSE}
+ape[, 'q1'] <- factor(ape[, 'q1'], levels = c(-99, -91, 1, 2, 3, 4, 5, 6, 7, 8, 
+                                              9, 10, 11, 12, 13), 
+               labels = c("Not in wave", "Not answered", "Conservative", 
+                          "Labour", "Liberal Democrats", "Scottish Nationalists",
+                          "Green Party", "UKIP", "BNP", "Respect", "Other", 
+                          "Would not vote", "Undecided", "Refused", "Not able to"))
+
+ape[, 'rurl'] <- factor(ape[, 'rurl'], levels = c(-99, -91, 16, 17), 
+               labels = c("Not in wave", "Not answered", "Rural", "Urban"))
+
+ape[, 'income'] <- factor(ape[, 'income'], levels = c(-99, -91, 1, 2, 3, 4, 5, 6, 7, 8, 
+                                              9, 10, 11, 12, 13, 14, 15, 16, 17), 
+               labels = c("Not in wave", "Not answered", "Up to £4,499", 
+                          "£4,500 - £6,499", "£6,500 - £7,499", 
+                          "£7,500 - £9,499", "£9,500 - £11,499", 
+                          "£11,500 - £13,499", "£13,500 - £15,499", 
+                          "£15,500 - £17,499", "£17,500 - £24,999",
+                          "£25,000 - £29,999", "£30,000 - £39,999", 
+                          "£40,000 - £49,999", "£50,000 - £74,999",
+                          "£75,000 - £99,999", "£100,000 or more", 
+                          "Don't know", "Refused"))
+
+ape[, 'anykid'] <- factor(ape[, 'anykid'], levels = c(-99, -91, 1, 2, 3, 4, 5), 
+               labels = c("Not in wave", "Not answered", "Any", "None", 
+                          "Refused", "No answer", "Not stated"))
+
+```
+
+
+## Summary statistics
+
+```{r echo = TRUE}
+summary(ape)
+```
+
+
+## Voting intention
+
+```{r echo = TRUE, fig.align = "center", out.width = "60%", eval = TRUE}
+ggplot(data = ape, aes(x = q1)) + geom_bar() +
+  labs(x = "", y = "Count", title = 
+"Which party would you vote for if the general election was tomorrow?") +
+  theme(axis.text = element_text(angle= 45, hjust = 1))
+```
+
+
+## 
+
+```{r echo = TRUE, fig.align = "center", out.width = "60%", eval = TRUE}
+ggplot(data = ape, aes(x = income)) + geom_bar() +
+  labs(x = "", y = "Count", title = 
+"What is your household yearly income?") +
+  theme(axis.text = element_text(angle= 45, hjust = 1))
+```
+
+## Gender
+
+```{r echo = TRUE, fig.align = "center", out.width = "70%", eval = TRUE}
+ggplot(data = ape, aes(x = gender)) + geom_bar() +
+        labs(x = "", y = "Count", title = "What is your gender?")
+```
+
+## Gender and voting intention
+
+```{r echo = TRUE, fig.align = "center", out.width = "60%", eval = TRUE}
+ggplot(data = ape, aes(x = q1, fill = gender)) + 
+  geom_bar(position = "dodge") +
+        labs(x = "", y = "Count", 
+             title = "Voting intention by gender?") +
+  theme(axis.text = element_text(angle= 45, hjust = 1))
+```
+
+## Debrief
+
+Think for a second and come up with several issues that would arise if we were to take those graphs to mean anything.
+
+# {.flexbox .vcenter}
+
+![](img/fin.png)\
+

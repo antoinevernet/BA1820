@@ -1,0 +1,194 @@
+---
+title: "Session 3"
+author: "Antoine Vernet"
+date: ''
+output:
+  ioslides_presentation:
+    css: style.css
+  beamer_presentation:
+    slide_level: 2
+subtitle: Probability
+---
+
+```{r library list, echo = FALSE}
+library(ggplot2)
+library(knitr)
+#library(rgl)
+#knit_hooks$set(webgl = hook_webgl)
+```
+
+## Lesson plan
+
+Today we will cover:
+
+- basics of probability
+
+
+# Probability
+
+## Random variables
+
+A random variable can take values from a set with an associated probability for each value.
+
+## Bernouilli variable
+
+A Bernouilli variable is a variable that can take values $0$ and $1$. With $p_1 = p$ and $p_0 = 1-p$
+
+<div class = col1>
+```{r, echo = FALSE, out.width = "35%", fig.retina = NULL, fig.align = 'right'}
+knitr::include_graphics("./img/coin_head.png")
+
+```
+</div>
+
+<div class = col2>
+<center>
+```{r, echo = FALSE, out.width = '35%', fig.retina = NULL, fig.align = 'left'}
+knitr::include_graphics("./img/coin_tail.png")
+
+```
+</center>
+</div>
+
+
+## Discrete variable
+
+A discrete variable is a variable that can take a finite number of values. For example a variable that can take integer values from $1$ to $6$ is a discrete variable.
+
+```{r, echo = FALSE, out.width = '40%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics("./img/rollthedice1.jpeg")
+```
+
+## Continuous variable
+
+A continuous variable is a variable that can take any values that fall within a certain interval. 
+
+For example, the measure of height of a population of individuals is a continuous variable that can, theoretically, take any value in $\mathbb{R}$ over a certain range.
+
+
+## Probability distribution
+
+A probability distribution describes the probability of events associated to a random variable.
+There are two general cases:
+
+- discrete probability distribution
+- continuous probability distribution
+
+
+## Probability mass function
+
+A discrete random variable has an associated probability mass function (pmf) which describes the probability distribution of the variable.
+
+```{r, echo = FALSE, out.width = '40%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics("./img/Fair_dice_probability_distribution.png")
+```
+
+Would you say this dice is fair?
+
+## Probability density function
+
+A continuous random variable has an associated probability density function (pdf).
+
+A pdf does not give a direct probability, but the integral of the pdf over a certain range gives the probability that values of this random variable will fall within this range:
+
+$$
+P [a \le X \le b] = \int_a^b f_X(x) \, dx
+$$
+
+
+## Probability density function
+
+```{r, echo = FALSE, out.width = '60%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics("./img/PDF.png")
+```
+
+
+## Cumulative distribution function
+
+The cumulative distribution function of a  real-valued random variable $X$ is the integral of the probability density function of $X$ and therefore indicate the size of the area under the pdf from $- \infty$ to $x$ for any value of $x$, which is the probability than $X$ takes a value inferior or equal to $x$
+
+
+```{r, echo = FALSE, out.width = '60%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics("./img/Normal_Distribution_CDF.png")
+```
+
+## The normal distribution (simulated)
+
+```{r, fig.align = 'center'}
+library(ggplot2)
+normal_dis <- data.frame(x = rnorm(n = 1000, mean = 0, sd = 1))
+ggplot(data = normal_dis, aes(x)) + geom_density()
+```
+
+## The normal distribution (theoretical)
+
+```{r, fig.align = 'center'}
+ggplot(data.frame(x = c(-3, 3)), aes(x)) + stat_function(fun = dnorm)
+```
+
+
+## Joint distribution
+
+A joint distribution defines the distribution of any given number of random variables.
+
+```{r, echo = FALSE, out.width = '60%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics("./img/Multivariate_normal_sample.png")
+```
+
+## Conditional probability distribution
+
+Given two jointly distributed random variables, $X$ and $Y$, the conditional probability distribution of $Y$ given $X$ is the probability distribution function of $Y$ when $X$ is known.
+
+This can be generalized to an arbitrary number, $n$, of variables, where the distribution for the variable of interest is conditional on all other distributions.
+
+## Conditional probability distribution
+
+For discrete random variables, the conditional mass function is:
+
+$$
+p_Y(y \mid X = x) = P(Y = y \mid X = x) = \frac{P(X = x \ \cap Y = y)}{P(X = x)}
+$$
+which is only defined for $P(X = x) > 0$.
+
+For continuous random variables, the conditional density function is:
+
+$$
+f_Y(y \mid X = x) = \frac{f_{X, Y} (x, y)}{f_X (x)}
+$$
+where $f_{X, Y}$ is the joint density of $X$ and $Y$ and $f_X$ is the marginal density of $X$.
+Here again $F_X(x) > 0$
+
+## Independence
+
+Two random variables are independent if the conditional distribution of one given the other is equal to the marginal distribution of this variable.
+
+For discrete variables:
+$$
+P(Y = y | X = x) = P(Y = y)
+$$
+
+For continuous variables:
+
+$$
+f_Y (y \mid X = x) = f_Y(y)
+$$
+for all relevant $x$ and $y$
+
+
+## Properties of independence
+
+Independence means that for discrete variables:
+
+$$
+P(X = x, Y = y) = P(X = x) P(Y = y)
+$$
+and, for continuous variables:
+
+$$
+f_{X, Y}(x, y) = f_X(x) f_Y(y)
+$$
+
+
+# {.flexbox .vcenter}
+
+![](img/fin.png)
