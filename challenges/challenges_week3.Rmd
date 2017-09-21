@@ -1,0 +1,57 @@
+---
+title: "Challenge 3"
+author: "Antoine Vernet"
+date: ''
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+The abstract.txt file contains the abstracts of the _Academy of Management Journal_ from 1966 until early 2017.
+Each scientific paper published in this journal has an abstract describing the content of the paper.
+Can you tell me how topics studied in this journal evolved over time?
+What type of theories or organisational issues where most studied in each decades in which this journal was published?
+You can use the open book [Text Mining with R](http://tidytextmining.com/) for inspiration.
+
+
+```{r}
+# Below is just a short bit of boilerplate code to get you started
+library(jsonlite)
+library(magrittr)
+library(tidytext)
+library(dplyr)
+library(stringr)
+library(knitr)
+library(ggplot2)
+
+abstracts <- read_json("../data/abstract.txt")
+# Paths are relative to the file if .Rmd
+
+abstracts <- data.frame(id = names(abstracts), 
+                     abstract = matrix(unlist(abstracts), ncol = 1))
+# maybe clean-up the elements of the list (\n and trailing whitespaces)
+# does not seem necessary, unnest_tokens seems to take care of this.
+abstracts[, "abstract"] <- as.character(abstracts[, "abstract"])
+#abstract[, "id"] <- as.character(abstract[, "id"])
+
+# Add variables for issue and volume
+abstracts <- mutate(abstracts, volume = as.numeric(str_match(abstracts[, "id"], 
+                                            "^([0-9]*)")[,2]), 
+                 issue = as.numeric(str_match(abstracts[, "id"], "/([0-9]*)/")[,2]))
+
+# Get rid of the abstracts without data
+abstracts <- abstracts %>% 
+  mutate(abstract = ifelse(abstract == "NA", NA, abstract)) %>%
+  filter(!is.na(abstract))
+
+#library(tidytext)
+abstracts_words <- unnest_tokens(abstracts, word, abstract)
+
+# get rid of stopwords
+data("stop_words")
+cleaned_abstracts <- abstracts_words %>%
+  anti_join(stop_words, by = "word") %>%
+  arrange(id) 
+```
+
