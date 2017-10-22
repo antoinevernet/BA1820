@@ -101,7 +101,7 @@ The revenues have already been adjusted for inflation
 
 ```
 
-7. Is there differences in the distribution of voting intentions across the different region of the UK (gor)?
+7. Are there differences in the distribution of voting intentions across the different region of the UK (gor)?
 
 ```{r}
 # Put your code in here
